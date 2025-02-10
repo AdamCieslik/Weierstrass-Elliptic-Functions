@@ -32,6 +32,7 @@ To run the notebook, the following libraries are required:
 
 # To-Do List
 - Improving the definition of the $\wp^{-1}$ function
+- Code a continous expresion for $\ln{\frac{\sigma(x-y)}{\sigma(x+y)}}$
 - Develop a SageMath implementation.
 - Develop a Julia implementation.
 
