@@ -12,6 +12,7 @@ This library provides Weierstrass elliptic functions and related utilities, name
 - Omega3(g2, g3)
 - WeierstrassInvariants(omega_i, omega_j)
 - WeierstrassP(z, g2, g3)
+- reduce_argument(z, g2,g3 )
 - InverseWeierstrassP(z, g2, g3) (to be updated)
 - WeierstrassPPrime(z, g2, g3)
 - WeierstrassSigma(z, g2, g3)
@@ -112,6 +113,35 @@ def WeierstrassInvariants(omega1, omega3):
     g3 = (pi / (2 * omega1))**6 * ((8/27)*(jtheta(2, 0, q)**12 + jtheta(3, 0, q)**12)-(4/9)*(jtheta(2, 0, q)**4 +jtheta(3, 0, q)**4) * jtheta(2, 0, q)**4 * jtheta(3, 0, q)**4)
 
     return (g2, g3)
+
+## Reduce argument
+
+def reduce_argument(tilde_z, g2,g3 ):
+    
+    oomega1 = Omega1(g2, g3) 
+    oomega3 = Omega3(g2,g3)
+    ttau = oomega3/oomega1 
+    # Step 1: Convert tilde_z to c coordinates: c = omega^{-1} * tilde_z
+    c = (1/oomega1) * tilde_z 
+    
+    # Step 2: Separating c into its imaginary part to find beta
+    Im_tau = ttau.imag
+    Im_c = c.imag
+    beta = (1/Im_tau) * Im_c  # beta ∈ R
+
+    # Step 3: Calculation of alpha
+    Re_tau = ttau.real
+    Re_c =  c.real
+    alpha = Re_c - Re_tau * beta  # alpha ∈ R
+    
+    # Step 4: Reducing the coordinates of mu and nu to the interval [0,1)
+    mu = alpha/2- floor(alpha/2)
+    nu = beta/2 - floor(beta/2)
+
+    # Step 5: Reconstruction of the reduced z
+    z_red =2* oomega1 * (mu + ttau * nu)
+    
+    return z_red
 
 ## Wp
 
