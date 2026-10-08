@@ -3,7 +3,7 @@ weierstrass.py
 
 Author: Adam Cieślik
 Date: February 2025
-Version: 1.0
+Version: 2.0
 
 Description:
 This library provides Weierstrass elliptic functions and related utilities, namely:
@@ -17,6 +17,7 @@ This library provides Weierstrass elliptic functions and related utilities, name
 - WeierstrassPPrime(z, g2, g3)
 - WeierstrassSigma(z, g2, g3)
 - WeierstrassZeta(z, g2, g3)
+- ContinuousSigmaLog(x, y, g2, g3)
 
 A detailed description can be found at:  
 [GitHub Repository](https://github.com/AdamCieslik/Weierstrass-Elliptic-Functions)
@@ -196,3 +197,36 @@ def WeierstrassZeta(z,g2,g3):
     firstP = eta1(g2,g3) * z/Omega1(g2,g3)
     secondP =  pi/(2*Omega1(g2,g3)) *jtheta(1,  pi * z/(2*Omega1(g2,g3)), q, derivative=1)/jtheta(1,  pi * z/(2*Omega1(g2,g3)), q)
     return firstP + secondP
+
+# Continuous Complex Logarithm of Sigma Ratio
+
+def ContinuousSigmaLog(x, y, g2, g3):
+    """
+    Computes the continuous principal branch of the logarithm of the ratio of Weierstrass Sigma functions:
+    log( sigma(x - y) / sigma(x + y) )
+    This implementation unwraps the 2*pi*i jumps when integrating over paths in the complex plane.
+    """
+    w1 = Omega1(g2, g3)
+    w3 = Omega3(g2, g3)
+    
+    if (w3 / w1).imag < 0:
+        w3 = -w3
+
+    eta = eta1(g2, g3)
+    
+    # Calculate sigmatildes
+    sigmatilde1 = WeierstrassSigma(x - y, g2, g3) * exp(-eta * (x - y)**2 / (2 * w1))
+    sigmatilde2 = WeierstrassSigma(x + y, g2, g3) * exp(-eta * (x + y)**2 / (2 * w1))
+    
+    Iy = (y / w1).imag / (w3 / w1).imag
+    
+    if abs(Iy) < 1e-14:
+        k = 0
+    else:
+        k = -sign(Iy) * (1 + 2 * floor(abs(Iy) / 2))
+    
+    ratio = sigmatilde1 / sigmatilde2
+    inner_exp = exp(k * pi * j * (x / w1 - 1))
+    valX = log(ratio * inner_exp) - k * pi * j * (x / w1 - 1) - 2 * eta * x * y / w1
+    
+    return valX
