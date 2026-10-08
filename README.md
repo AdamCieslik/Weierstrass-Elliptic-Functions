@@ -31,7 +31,6 @@ To run the notebook, the following libraries are required:
 - `numpy`  
 
 # To-Do List
-- Code a continous expresion for $\ln{\frac{\sigma(x-y)}{\sigma(x+y)}}$
 - Develop a SageMath implementation.
 - Develop a Julia implementation.
 
